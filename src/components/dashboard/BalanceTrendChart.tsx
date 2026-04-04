@@ -29,7 +29,7 @@ export function BalanceTrendChart({ data }: BalanceTrendChartProps) {
           <EmptyState title="No trend data" description="Add transactions to render trend analytics." />
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 8, right: 8, left: 4, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 8, right: 8, left: 8, bottom: 6 }}>
               <defs>
                 <linearGradient id="trend" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#0ea5e9" stopOpacity={0.65} />
@@ -43,12 +43,16 @@ export function BalanceTrendChart({ data }: BalanceTrendChartProps) {
                 tick={{ fontSize: 12 }}
                 tickLine={false}
                 axisLine={false}
+                tickMargin={8}
+                minTickGap={22}
+                interval="preserveStartEnd"
               />
               <YAxis
                 stroke="var(--text-dim)"
                 tick={{ fontSize: 12 }}
                 tickLine={false}
                 axisLine={false}
+                width={58}
                 tickFormatter={(value) => `$${Math.round(Number(value) / 1000)}k`}
               />
               <Tooltip
@@ -56,7 +60,7 @@ export function BalanceTrendChart({ data }: BalanceTrendChartProps) {
                 formatter={(value) => formatCurrency(Number(value ?? 0))}
                 cursor={{ fill: 'transparent' }}
               />
-              <Area type="monotone" dataKey="balance" stroke="#0ea5e9" fill="url(#trend)" strokeWidth={2.5} />
+              <Area type="natural" dataKey="balance" stroke="#0ea5e9" fill="url(#trend)" strokeWidth={2.5} />
             </AreaChart>
           </ResponsiveContainer>
         )}

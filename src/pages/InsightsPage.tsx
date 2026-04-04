@@ -119,7 +119,7 @@ export function InsightsPage() {
                   data={monthlyIncomeExpenses}
                   margin={{ top: 6, right: 6, left: 6, bottom: 0 }}
                   barGap={0}
-                  barCategoryGap="25%"
+                  barCategoryGap="8%"
                 >
                   <CartesianGrid stroke="var(--line)" strokeDasharray="3 6" vertical={false} opacity={0.55} />
                   <XAxis
@@ -154,12 +154,14 @@ export function InsightsPage() {
                     dataKey="income"
                     fill="#12c2ff"
                     radius={[6, 6, 0, 0]}
+                    barSize={48}
                     animationDuration={620}
                   />
                   <Bar
                     dataKey="expenses"
                     fill="#5f7dff"
                     radius={[6, 6, 0, 0]}
+                    barSize={48}
                     animationDuration={680}
                   />
                 </BarChart>
