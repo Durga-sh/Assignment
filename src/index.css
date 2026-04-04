@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+:root {
+  --bg-main: #f2f8fc;
+  --bg-surface: #ffffff;
+  --bg-soft: #deecf8;
+  --line: #c2d7e8;
+  --text-main: #0f2536;
+  --text-dim: #557086;
+  --accent: #0ea5e9;
+  --income: #16a34a;
+  --expense: #dc2626;
+}
+
+:root[data-theme='dark'] {
+  --bg-main: #03111e;
+  --bg-surface: #0a1f32;
+  --bg-soft: #12304a;
+  --line: #29465f;
+  --text-main: #e9f6ff;
+  --text-dim: #a7c5dc;
+  --accent: #12c2ff;
+  --income: #28d17c;
+  --expense: #ff7373;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Manrope', sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--accent) 24%, transparent) 0%, transparent 45%),
+    radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--bg-soft) 90%, transparent) 0%, transparent 35%),
+    linear-gradient(160deg, color-mix(in srgb, var(--bg-main) 94%, #000) 0%, var(--bg-main) 100%);
+  color: var(--text-main);
+  transition: background 240ms ease, color 240ms ease;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  color: inherit;
+  transition: all 180ms ease;
+}
+
+article,
+section,
+table,
+thead,
+tbody,
+tr,
+td {
+  will-change: transform, opacity;
+}
