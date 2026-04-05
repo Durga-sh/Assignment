@@ -176,7 +176,7 @@ export function AppLayout() {
         onMouseLeave={() => isDesktop && setSidebarOpen(false)}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 border-b border-[var(--line)] px-4 py-5">
+        <div className="flex h-16 items-center gap-3 border-b border-[var(--line)] px-3">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-main)] border border-[var(--line)] shadow-sm">
             <img src={sidebarLogo} alt="Zorvyn logo" className="h-5 w-5 object-contain" />
           </div>
