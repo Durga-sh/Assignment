@@ -16,10 +16,20 @@ export const exportTransactionsJSON = (rows: Transaction[]) => {
 
 export const exportTransactionsCSV = (rows: Transaction[]) => {
   const headers = ['id', 'date', 'amount', 'category', 'type', 'note']
+
+  const formatDateForCsv = (date: string) => {
+    const [year, month, day] = date.split('-')
+    if (!year || !month || !day) return date
+    return `${day}-${month}-${year}`
+  }
+
+  // Force Excel to keep the value as text so it does not render as #######.
+  const formatDateForExcel = (date: string) => `="${formatDateForCsv(date)}"`
+
   const escape = (value: string | number) => `"${String(value).replaceAll('"', '""')}"`
   const body = rows
-    .map((row) => [row.id, row.date, row.amount, row.category, row.type, row.note].map(escape).join(','))
+    .map((row) => [row.id, formatDateForExcel(row.date), row.amount, row.category, row.type, row.note].map(escape).join(','))
     .join('\n')
 
-  download('transactions.csv', `${headers.join(',')}\n${body}`, 'text/csv;charset=utf-8;')
+  download('transactions.csv', `\uFEFF${headers.join(',')}\n${body}`, 'text/csv;charset=utf-8;')
 }
