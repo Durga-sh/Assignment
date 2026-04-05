@@ -1,52 +1,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
 :root {
-  --bg-main: #f2f8fc;
+  --bg-main: #f4f6fb;
   --bg-surface: #ffffff;
-  --bg-soft: #deecf8;
-  --line: #c2d7e8;
-  --text-main: #0f2536;
-  --text-dim: #557086;
-  --accent: #0ea5e9;
-  --income: #16a34a;
-  --expense: #dc2626;
+  --bg-soft: #eef1f8;
+  --line: #e4e8f0;
+  --text-main: #1a2236;
+  --text-dim: #8896ab;
+  --accent: #7c3aed;
+  --accent-light: #ede9fe;
+  --income: #10b981;
+  --expense: #ef4444;
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(124,58,237,0.06);
 }
 
 :root[data-theme='dark'] {
-  --bg-main: #03111e;
-  --bg-surface: #0a1f32;
-  --bg-soft: #12304a;
-  --line: #29465f;
-  --text-main: #e9f6ff;
-  --text-dim: #a7c5dc;
-  --accent: #12c2ff;
-  --income: #28d17c;
-  --expense: #ff7373;
+  --bg-main: #0f1117;
+  --bg-surface: #1a1d27;
+  --bg-soft: #222534;
+  --line: #2a2e40;
+  --text-main: #e8ecf5;
+  --text-dim: #6b7a9a;
+  --accent: #8b5cf6;
+  --accent-light: #1e1534;
+  --income: #10b981;
+  --expense: #f87171;
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-* {
-  box-sizing: border-box;
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
   font-family: 'Manrope', sans-serif;
-  background:
-    radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--accent) 24%, transparent) 0%, transparent 45%),
-    radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--bg-soft) 90%, transparent) 0%, transparent 35%),
-    linear-gradient(160deg, color-mix(in srgb, var(--bg-main) 94%, #000) 0%, var(--bg-main) 100%);
+  background-color: var(--bg-main);
   color: var(--text-main);
   transition: background 240ms ease, color 240ms ease;
 }
 
-#root {
-  min-height: 100vh;
+* {
+  box-sizing: border-box;
 }
 
 button,
@@ -55,6 +56,11 @@ select {
   color: inherit;
   transition: all 180ms ease;
 }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
 article,
 section,

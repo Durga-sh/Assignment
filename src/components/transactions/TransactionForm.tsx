@@ -68,7 +68,7 @@ export function TransactionForm({ editing, defaultType = 'expense', categories, 
         required
         value={formData.date}
         onChange={(event) => setFormData((prev) => ({ ...prev, date: event.target.value }))}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className="rounded-xl border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm text-[var(--text-main)] outline-none focus:border-[var(--accent)] transition-colors"
       />
       <input
         type="number"
@@ -76,14 +76,14 @@ export function TransactionForm({ editing, defaultType = 'expense', categories, 
         required
         value={formData.amount}
         onChange={(event) => setFormData((prev) => ({ ...prev, amount: event.target.value }))}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className="rounded-xl border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm text-[var(--text-main)] outline-none focus:border-[var(--accent)] transition-colors"
         placeholder="Amount"
       />
       <select
         required
         value={formData.category}
         onChange={(event) => setFormData((prev) => ({ ...prev, category: event.target.value }))}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className="rounded-xl border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm text-[var(--text-main)] outline-none focus:border-[var(--accent)] transition-colors"
       >
         <option value="" disabled>
           Select category
@@ -97,7 +97,7 @@ export function TransactionForm({ editing, defaultType = 'expense', categories, 
       <select
         value={formData.type}
         onChange={(event) => setFormData((prev) => ({ ...prev, type: event.target.value as TransactionType }))}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className="rounded-xl border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm text-[var(--text-main)] outline-none focus:border-[var(--accent)] transition-colors"
       >
         <option value="income">Income</option>
         <option value="expense">Expense</option>
@@ -105,17 +105,17 @@ export function TransactionForm({ editing, defaultType = 'expense', categories, 
       <input
         value={formData.note}
         onChange={(event) => setFormData((prev) => ({ ...prev, note: event.target.value }))}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm md:col-span-2"
+        className="rounded-xl border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm text-[var(--text-main)] outline-none focus:border-[var(--accent)] transition-colors md:col-span-2"
         placeholder="Note"
       />
       <div className="flex gap-2 md:col-span-3">
-        <button type="submit" className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[#012538]">
+        <button type="submit" className="rounded-xl bg-linear-to-r from-violet-600 to-purple-700 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity">
           {editing ? 'Update' : 'Create'}
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg border border-[var(--line)] px-4 py-2 text-sm text-[var(--text-main)]"
+          className="rounded-xl border border-[var(--line)] px-5 py-2 text-sm font-medium text-[var(--text-dim)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
         >
           Cancel
         </button>

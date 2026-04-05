@@ -16,6 +16,8 @@ export function TransactionFilters({
   onFiltersChange,
   onSortChange,
 }: TransactionFiltersProps) {
+  const inputCls = 'rounded-xl border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm text-[var(--text-main)] outline-none focus:border-[var(--accent)] transition-colors'
+
   return (
     <div className="grid gap-2 md:grid-cols-4 xl:grid-cols-8">
       <label className="relative xl:col-span-2">
@@ -24,14 +26,14 @@ export function TransactionFilters({
           value={filters.query}
           onChange={(event) => onFiltersChange({ ...filters, query: event.target.value })}
           placeholder="Search category or note"
-          className="w-full rounded-lg border border-[var(--line)] bg-[var(--bg-main)] py-2 pl-8 pr-3 text-sm text-[var(--text-main)] outline-none"
+          className={`w-full pl-8 ${inputCls}`}
         />
       </label>
 
       <select
         value={filters.type}
         onChange={(event) => onFiltersChange({ ...filters, type: event.target.value as TransactionFilters['type'] })}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className={inputCls}
       >
         <option value="all">All types</option>
         <option value="income">Income</option>
@@ -41,7 +43,7 @@ export function TransactionFilters({
       <select
         value={filters.category}
         onChange={(event) => onFiltersChange({ ...filters, category: event.target.value })}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className={inputCls}
       >
         {categories.map((category) => (
           <option key={category} value={category}>
@@ -56,7 +58,7 @@ export function TransactionFilters({
         value={filters.minAmount}
         onChange={(event) => onFiltersChange({ ...filters, minAmount: event.target.value })}
         placeholder="Min amount"
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className={inputCls}
       />
 
       <input
@@ -65,21 +67,21 @@ export function TransactionFilters({
         value={filters.maxAmount}
         onChange={(event) => onFiltersChange({ ...filters, maxAmount: event.target.value })}
         placeholder="Max amount"
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className={inputCls}
       />
 
       <input
         type="date"
         value={filters.dateFrom}
         onChange={(event) => onFiltersChange({ ...filters, dateFrom: event.target.value })}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className={inputCls}
       />
 
       <input
         type="date"
         value={filters.dateTo}
         onChange={(event) => onFiltersChange({ ...filters, dateTo: event.target.value })}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className={inputCls}
       />
 
       <select
@@ -88,7 +90,7 @@ export function TransactionFilters({
           const [field, direction] = event.target.value.split(':')
           onSortChange({ field: field as SortState['field'], direction: direction as SortState['direction'] })
         }}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className={inputCls}
       >
         <option value="date:desc">Newest first</option>
         <option value="date:asc">Oldest first</option>
@@ -99,7 +101,7 @@ export function TransactionFilters({
       <select
         value={filters.groupBy}
         onChange={(event) => onFiltersChange({ ...filters, groupBy: event.target.value as TransactionFilters['groupBy'] })}
-        className="rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm"
+        className={inputCls}
       >
         <option value="none">No grouping</option>
         <option value="category">Group by category</option>

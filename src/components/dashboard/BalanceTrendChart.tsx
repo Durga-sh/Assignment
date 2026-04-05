@@ -12,19 +12,20 @@ import { EmptyState } from '../common/EmptyState'
 
 type BalanceTrendChartProps = {
   data: { month: string; balance: number }[]
+  compact?: boolean
 }
 
-export function BalanceTrendChart({ data }: BalanceTrendChartProps) {
+export function BalanceTrendChart({ data, compact }: BalanceTrendChartProps) {
   const chartData = data.map((item) => ({
     ...item,
     label: new Date(`${item.month}-01`).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
   }))
 
   return (
-    <article className="rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5">
-      <h2 className="text-lg font-bold text-[var(--text-main)]">Balance Trend</h2>
-      <p className="mb-4 text-sm text-[var(--text-dim)]">Time-based running balance</p>
-      <div className="h-80 rounded-xl border border-[var(--line)] bg-[var(--bg-main)] p-3">
+    <article className={`flex flex-col rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] ${compact ? 'h-full p-3' : 'p-5'}`}>
+      <h2 className={`font-bold text-[var(--text-main)] ${compact ? 'text-sm' : 'text-lg'}`}>Balance Trend</h2>
+      <p className={`text-[var(--text-dim)] ${compact ? 'mb-2 text-xs' : 'mb-4 text-sm'}`}>Time-based running balance</p>
+      <div className={`flex-1 overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--bg-main)] p-2 ${compact ? 'min-h-0' : 'h-80'}`}>
         {chartData.length === 0 ? (
           <EmptyState title="No trend data" description="Add transactions to render trend analytics." />
         ) : (

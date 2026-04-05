@@ -11,19 +11,19 @@ export function ExportButtons({ onCSV, onJSON }: ExportButtonsProps) {
     <div className="flex items-center gap-2">
       <motion.button
         onClick={onCSV}
-        className="inline-flex items-center gap-1 rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm text-[var(--text-main)] transition hover:border-[var(--accent)]"
+        className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm font-semibold text-[var(--text-dim)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
         whileHover={{ y: -1, scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <Download size={15} /> CSV
+        <Download size={14} /> CSV
       </motion.button>
       <motion.button
         onClick={onJSON}
-        className="inline-flex items-center gap-1 rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm text-[var(--text-main)] transition hover:border-[var(--accent)]"
+        className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--bg-main)] px-3 py-2 text-sm font-semibold text-[var(--text-dim)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
         whileHover={{ y: -1, scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <Download size={15} /> JSON
+        <Download size={14} /> JSON
       </motion.button>
     </div>
   )

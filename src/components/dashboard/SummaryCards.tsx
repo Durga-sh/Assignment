@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { formatCurrency } from '../../utils/format'
 
 type SummaryCardsProps = {
@@ -9,36 +10,64 @@ type SummaryCardsProps = {
 
 export function SummaryCards({ totalBalance, totalIncome, totalExpenses }: SummaryCardsProps) {
   const cards = [
-    { title: 'Total Balance', value: totalBalance, tone: 'text-[var(--text-main)]' },
-    { title: 'Income', value: totalIncome, tone: 'text-emerald-400' },
-    { title: 'Expenses', value: totalExpenses, tone: 'text-red-400' },
+    {
+      title: 'Net Balance',
+      value: totalBalance,
+      icon: <Wallet size={18} />,
+      iconBg: 'bg-[color-mix(in_srgb,var(--accent)_15%,transparent)]',
+      iconColor: 'text-[var(--accent)]',
+      valueColor: 'text-[var(--text-main)]',
+      trend: null,
+    },
+    {
+      title: 'Total Income',
+      value: totalIncome,
+      icon: <TrendingUp size={18} />,
+      iconBg: 'bg-[color-mix(in_srgb,#22d47a_15%,transparent)]',
+      iconColor: 'text-emerald-400',
+      valueColor: 'text-emerald-400',
+      trend: '+',
+    },
+    {
+      title: 'Total Expenses',
+      value: totalExpenses,
+      icon: <TrendingDown size={18} />,
+      iconBg: 'bg-[color-mix(in_srgb,#ff6b6b_15%,transparent)]',
+      iconColor: 'text-red-400',
+      valueColor: 'text-red-400',
+      trend: '-',
+    },
   ]
 
   return (
     <motion.section
       className="grid gap-4 md:grid-cols-3"
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={{
-        hidden: {},
-        show: {
-          transition: { staggerChildren: 0.08 },
-        },
-      }}
+      animate="show"
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
     >
       {cards.map((card, index) => (
         <motion.article
           key={card.title}
-          className="rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5"
-          variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
-          transition={{ type: 'spring', stiffness: 110, damping: 16, delay: index * 0.04 }}
-          whileHover={{ y: -4, scale: 1.01 }}
+          className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-sm"
+          variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
+          transition={{ type: 'spring', stiffness: 120, damping: 16, delay: index * 0.04 }}
+          whileHover={{ y: -3, boxShadow: '0 8px 30px color-mix(in srgb, var(--accent) 12%, transparent)' }}
         >
-          <p className="text-sm text-[var(--text-dim)]">{card.title}</p>
-          <p className={`mt-2 text-2xl font-extrabold ${card.tone}`}>{formatCurrency(card.value)}</p>
+          <div className="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-[color-mix(in_srgb,var(--accent)_6%,transparent)] blur-2xl" />
+
+          <div className="flex items-start justify-between">
+            <p className="text-sm font-medium text-[var(--text-dim)]">{card.title}</p>
+            <span className={`flex h-8 w-8 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
+              {card.icon}
+            </span>
+          </div>
+          <p className={`mt-3 text-2xl font-extrabold tracking-tight ${card.valueColor}`}>
+            {card.trend === '-' ? '– ' : ''}{formatCurrency(card.value)}
+          </p>
         </motion.article>
       ))}
     </motion.section>
   )
 }
+
