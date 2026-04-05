@@ -2,6 +2,12 @@ import { motion } from 'framer-motion'
 import { useState, type FormEvent } from 'react'
 import type { Transaction, TransactionType } from '../../types/finance'
 
+const getLocalToday = () => {
+  const now = new Date()
+  const offsetMs = now.getTimezoneOffset() * 60_000
+  return new Date(now.getTime() - offsetMs).toISOString().slice(0, 10)
+}
+
 type TransactionFormProps = {
   editing: Transaction | null
   defaultType?: TransactionType
@@ -12,7 +18,7 @@ type TransactionFormProps = {
 
 export function TransactionForm({ editing, defaultType = 'expense', categories, onSubmit, onClose }: TransactionFormProps) {
   const [formData, setFormData] = useState({
-    date: editing?.date ?? new Date().toISOString().slice(0, 10),
+    date: editing?.date ?? getLocalToday(),
     amount: editing?.amount.toString() ?? '0',
     category: editing?.category ?? '',
     type: (editing?.type ?? defaultType) as TransactionType,

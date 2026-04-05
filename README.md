@@ -1,115 +1,163 @@
 # Zorvyn Finance Dashboard UI
 
-Frontend assignment implementation using React (TypeScript) and Tailwind CSS.
+Frontend assignment implementation built with React, TypeScript, Vite, and Tailwind CSS.
 
 ## Tech Stack
 
 - React 19 + TypeScript
 - Vite
-- Tailwind CSS (via `@tailwindcss/vite`)
-- Recharts for visualizations
-- Lucide React icons
-- Framer Motion for transitions and animations
+- Tailwind CSS v4 (`@tailwindcss/vite`)
+- Zustand (state management)
+- Recharts (charts)
+- Framer Motion (animations)
+- Lucide + Tabler Icons
 
-## How to Run
+## Getting Started
 
-1. Install dependencies:
+1. Install dependencies
 
 ```bash
 npm install
 ```
 
-2. Start dev server:
+2. Run development server
 
 ```bash
 npm run dev
 ```
 
-3. Build for production:
+3. Build production bundle
 
 ```bash
 npm run build
 ```
 
-## Feature Overview
+4. Run lint checks
 
-### 1) Dashboard Overview
+```bash
+npm run lint
+```
 
-- Summary cards: Total Balance, Income, Expenses
-- Time-based visualization: Balance trend (`AreaChart`)
-- Categorical visualization: Spending breakdown by category (`PieChart`)
+5. Preview production build
 
-### 2) Transactions Section
+```bash
+npm run preview
+```
 
-- Transaction fields: Date, Amount, Category, Type, Note
-- Interactions:
-  - Search (category or note)
-  - Filter by type
-  - Filter by category
-  - Amount range filter
-  - Date range filter
-  - Grouping by category, month, or type
-  - Sort by date or amount
-- Export options: CSV and JSON
-- Graceful no-data state when filters return no results
+## Current Features
 
-### 3) Basic Role-Based UI (Frontend Simulation)
+### 1. Dashboard Overview
 
-- Role switcher: `Viewer` / `Admin`
-- Viewer:
-  - Read-only dashboard and transactions
-- Admin:
-  - Add new transaction
-  - Edit existing transaction
+- KPI cards for Net Balance, Total Income, Total Expenses, and Savings Rate.
+- Income vs Expenses monthly comparison (bar chart).
+- Spending by Category (donut chart + legend percentages).
+- Balance Trend (area chart).
+- Spending by Division list and transaction count snapshot card.
 
-### 4) Insights Section
+### 2. Transactions Management
 
-- Highest spending category
-- Monthly comparison of expenses
-- Helpful observation from current totals (income vs expenses)
+- List with fields: Date, Category, Type, Amount, Note.
+- Search by category/note.
+- Filters:
+  - Type
+  - Category
+  - Min/Max amount
+  - Date range
+- Sorting by date or amount.
+- Grouping by none/category/month/type.
+- CSV and JSON export.
+- Add Transaction (Income/Expense) for Admin role.
+- Edit Transaction for Admin role.
+- Empty-state handling for no matching records.
 
-### 5) State Management
+### 3. Insights
 
-Managed using React hooks (`useState`, `useMemo`) for:
+- User-friendly KPI cards:
+  - Income coverage ratio
+  - Average transaction value
+  - Balance growth
+- Monthly income vs expenses chart.
+- Monthly breakdown table (income, expenses, net).
+- Balance snapshots list with per-month delta.
 
-- Transactions dataset
-- Role selection
-- Theme mode (dark/light)
-- Filters and sorting
-- Add/edit form state
-- Derived metrics and chart data
+### 4. Roles and Permissions
 
-### 6) Optional Enhancements Included
+- Viewer and Admin role switcher in header.
+- Viewer permissions:
+  - View overview, transactions, and insights
+  - Export data
+- Admin permissions:
+  - All Viewer permissions
+  - Create and edit transactions
+- Permission logic is centralized in [src/lib/permissions.ts](src/lib/permissions.ts).
 
-- Single-page architecture with all required sections in one dashboard view
-- Mock API integration with simulated async delays
-- Data persistence using local storage
-- Dark mode toggle
-- Animated page elements and section transitions
-- Export functionality (CSV/JSON)
-- Advanced filtering and grouping
+### 5. Theme and UX
 
-### 7) UI/UX Details
+- Dark/light mode toggle.
+- Animated page and card transitions.
+- Responsive layout across desktop and mobile widths.
+- Reusable UI primitives (Button, Badge, Card).
+- Removed non-functional card menu actions for cleaner UI.
 
-- Responsive layout for mobile and desktop
-- Clean card-based dashboard structure
-- Distinct visual tokens for income/expense states
-- Empty states for chart/table sections
+## State Management (Zustand)
+
+State is managed with a centralized Zustand store in [src/store/finance-store.ts](src/store/finance-store.ts).
+
+Store includes:
+
+- Core state: role, theme, transactions, filters, sort, loading.
+- Derived state:
+  - categories
+  - filteredTransactions
+  - groupedTransactions
+  - summary
+  - trendData
+  - spendingBreakdown
+  - insights
+- Actions:
+  - bootstrap
+  - setRole
+  - setTheme
+  - setFilters
+  - setSort
+  - addTransaction
+  - updateTransaction
+
+Components subscribe via selectors using [src/context/useFinance.ts](src/context/useFinance.ts) to reduce unnecessary re-renders.
+
+## Data and Persistence
+
+- Mock API layer in [src/services/mockApi.ts](src/services/mockApi.ts) with simulated delay.
+- Seed data in [src/data/mockTransactions.ts](src/data/mockTransactions.ts).
+- Local storage persistence:
+  - Transactions: `zorvyn_transactions_v3`
+  - Role: `zorvyn_role`
+  - Theme: `zorvyn_theme`
+
+Important:
+
+- Seed data is written only on first load (or when storage is missing/corrupt).
+- If you change mock data and want to reseed, clear local storage for `zorvyn_transactions_v3` and reload.
+
+## Sorting and Latest Transaction Behavior
+
+- Date sorting is deterministic.
+- For same-date rows, transaction id timestamp is used as a tie-breaker so newer entries remain stable and visible in latest-first view.
 
 ## Project Structure
 
-- `src/App.tsx`: single-page dashboard composition
-- `src/context/FinanceContext.tsx`: centralized app state + derived data + persistence
-- `src/services/mockApi.ts`: mock async API layer
-- `src/components/*`: modular UI components by section
-- `src/index.css`: global styles, theme tokens, transitions
-- `vite.config.ts`: Vite plugin config including Tailwind
+- [src/App.tsx](src/App.tsx): App bootstrap and layout mount.
+- [src/store/finance-store.ts](src/store/finance-store.ts): Zustand store and derived logic.
+- [src/context/useFinance.ts](src/context/useFinance.ts): selector hook wrapper.
+- [src/components](src/components): UI and feature components.
+- [src/pages](src/pages): Overview, Transactions, Insights screens.
+- [src/services/mockApi.ts](src/services/mockApi.ts): mock async data operations.
+- [src/data/mockTransactions.ts](src/data/mockTransactions.ts): seeded finance dataset.
+- [src/utils/export.ts](src/utils/export.ts): CSV/JSON export helpers.
+- [src/index.css](src/index.css): design tokens and global styling.
 
-## Assumptions
+## Assignment Scope Notes
 
-- Uses mock frontend API layer (no backend server required)
-- Currency formatting uses `INR` locale for finance display
-
-## Notes for Review
-
-This project intentionally prioritizes frontend architecture, interaction flow, and clarity over backend integration, matching the assignment scope.
+- This is a frontend-focused submission with mock persistence.
+- Currency display is INR format.
+- Emphasis is on modular architecture, role-driven UX, responsive behavior, and maintainable state handling.

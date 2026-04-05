@@ -3,6 +3,8 @@ import { Pencil } from 'lucide-react'
 import type { Transaction } from '../../types/finance'
 import { formatCurrency } from '../../utils/format'
 import { EmptyState } from '../common/EmptyState'
+import { Badge } from '../ui/Badge'
+import { Button } from '../ui/Button'
 
 type TransactionTableProps = {
   groups: Record<string, Transaction[]>
@@ -37,7 +39,7 @@ export function TransactionTable({ groups, canEdit, onEdit }: TransactionTablePr
               const groupHeader = (
                 <tr key={`group-${group}`} className={groupIndex > 0 ? 'border-t-2 border-[var(--line)]' : ''}>
                   <td colSpan={columnCount} className="bg-[var(--bg-soft)] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-dim)]">
-                    {group} <span className="ml-1 rounded-full bg-[var(--accent-light)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--accent)]">{rows.length}</span>
+                    {group} <Badge variant="accent" className="ml-1 px-1.5">{rows.length}</Badge>
                   </td>
                 </tr>
               )
@@ -55,28 +57,27 @@ export function TransactionTable({ groups, canEdit, onEdit }: TransactionTablePr
                   <td className="px-4 py-3 text-xs text-[var(--text-dim)]">{txn.date}</td>
                   <td className="px-4 py-3 text-xs font-semibold text-[var(--text-main)]">{txn.category}</td>
                   <td className="px-4 py-3">
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-                        txn.type === 'income'
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : 'bg-violet-50 text-violet-700'
-                      }`}
+                    <Badge
+                      variant={txn.type === 'income' ? 'income' : 'expense'}
+                      className="px-2.5 py-1 text-[11px] font-semibold"
                     >
                       {txn.type}
-                    </span>
+                    </Badge>
                   </td>
                   <td className={`px-4 py-3 text-xs font-bold ${
-                    txn.type === 'income' ? 'text-emerald-600' : 'text-[var(--text-main)]'
+                    txn.type === 'income' ? 'text-emerald-600' : 'text-rose-600'
                   }`}>{formatCurrency(txn.amount)}</td>
                   <td className="px-4 py-3 text-xs text-[var(--text-dim)]">{txn.note}</td>
                   {canEdit && (
                     <td className="px-4 py-3">
-                      <button
+                      <Button
                         onClick={() => onEdit(txn)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-[var(--line)] bg-[var(--bg-main)] px-2.5 py-1.5 text-[11px] font-semibold text-[var(--text-main)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                        size="sm"
+                        variant="secondary"
+                        className="text-[var(--text-main)]"
                       >
                         <Pencil className="h-3 w-3" /> Edit
-                      </button>
+                      </Button>
                     </td>
                   )}
                 </motion.tr>

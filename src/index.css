@@ -57,6 +57,15 @@ select {
   transition: all 180ms ease;
 }
 
+:root[data-theme='dark'] input[type='date'] {
+  color-scheme: dark;
+}
+
+:root[data-theme='dark'] input[type='date']::-webkit-calendar-picker-indicator {
+  filter: brightness(0) invert(1) !important;
+  opacity: 1;
+}
+
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }

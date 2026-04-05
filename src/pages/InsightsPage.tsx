@@ -1,12 +1,15 @@
 import { motion } from 'framer-motion'
-import { Activity, ArrowDownRight, ArrowUpRight, MoreHorizontal, TrendingUp } from 'lucide-react'
+import { Activity, ArrowDownRight, ArrowUpRight, TrendingUp } from 'lucide-react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { LoadingPanel } from '../components/common/LoadingPanel'
-import { useFinance } from '../context/FinanceContext'
+import { useFinance } from '../context/useFinance'
 import { formatCurrency } from '../utils/format'
 
 export function InsightsPage() {
-  const { loading, summary, trendData, transactions } = useFinance()
+  const loading = useFinance((state) => state.loading)
+  const summary = useFinance((state) => state.summary)
+  const trendData = useFinance((state) => state.trendData)
+  const transactions = useFinance((state) => state.transactions)
 
   if (loading) return <LoadingPanel />
 
@@ -15,8 +18,8 @@ export function InsightsPage() {
       ? transactions.reduce((acc, txn) => acc + txn.amount, 0) / transactions.length
       : 0
 
-  const incomeCoverage =
-    summary.totalExpenses > 0 ? (summary.totalIncome / summary.totalExpenses) * 100 : 0
+  const incomeCoverageRatio =
+    summary.totalExpenses > 0 ? summary.totalIncome / summary.totalExpenses : 0
 
   const balanceDelta =
     trendData.length > 1 ? trendData[trendData.length - 1].balance - trendData[0].balance : 0
@@ -42,9 +45,12 @@ export function InsightsPage() {
 
   const kpi = [
     {
-      label: 'Income Coverage',
-      value: `${incomeCoverage.toFixed(0)}%`,
-      hint: incomeCoverage >= 100 ? 'Expenses fully covered' : 'Coverage below 100%',
+      label: 'Income vs Expenses',
+      value: summary.totalExpenses > 0 ? `${incomeCoverageRatio.toFixed(1)}x` : 'N/A',
+      hint:
+        summary.totalExpenses > 0
+          ? `For every ₹100 spent, you earn ₹${Math.round(incomeCoverageRatio * 100)}`
+          : 'Add expense data to calculate this',
       icon: <TrendingUp size={18} />,
       iconBg: 'bg-violet-100',
       iconColor: 'text-violet-600',
@@ -104,14 +110,14 @@ export function InsightsPage() {
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.1 }}
-        className="shrink-0 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+        className="shrink-0 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-4 sm:p-5 shadow-[var(--card-shadow)]"
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 className="text-sm font-bold text-[var(--text-main)]">Monthly Income vs Expenses</h2>
             <p className="text-xs text-[var(--text-dim)]">Side-by-side comparison across all months</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span className="flex items-center gap-1.5 text-xs text-[var(--text-dim)]">
               <span className="h-2.5 w-2.5 rounded-sm bg-violet-500" />
               Income
@@ -120,9 +126,6 @@ export function InsightsPage() {
               <span className="h-2.5 w-2.5 rounded-sm bg-cyan-400" />
               Expenses
             </span>
-            <button className="text-[var(--text-dim)] hover:text-[var(--text-main)]">
-              <MoreHorizontal size={16} />
-            </button>
           </div>
         </div>
         <div className="h-56">
@@ -159,28 +162,25 @@ export function InsightsPage() {
       </motion.article>
 
       {/* -- Row 3: Breakdown Table + Balance Snapshots ---------- */}
-      <div className="grid gap-4 pb-1 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 pb-1 lg:grid-cols-5">
 
         {/* Monthly breakdown table (3/5) */}
         <motion.article
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.18 }}
-          className="col-span-3 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+          className="col-span-1 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-4 sm:p-5 shadow-[var(--card-shadow)] lg:col-span-3"
         >
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-sm font-bold text-[var(--text-main)]">Monthly Breakdown</h2>
               <p className="text-xs text-[var(--text-dim)]">Income, expenses & net per month</p>
             </div>
-            <button className="text-[var(--text-dim)] hover:text-[var(--text-main)]">
-              <MoreHorizontal size={16} />
-            </button>
           </div>
           {monthlyData.length === 0 ? (
             <p className="py-8 text-center text-sm text-[var(--text-dim)]">No data yet.</p>
           ) : (
-            <div className="overflow-hidden rounded-xl border border-[var(--line)]">
+            <div className="overflow-x-auto rounded-xl border border-[var(--line)]">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--line)] bg-[var(--bg-main)]">
@@ -215,7 +215,7 @@ export function InsightsPage() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.22 }}
-          className="col-span-2 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+          className="col-span-1 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-4 sm:p-5 shadow-[var(--card-shadow)] lg:col-span-2"
         >
           <div className="mb-4">
             <h2 className="text-sm font-bold text-[var(--text-main)]">Balance Snapshots</h2>

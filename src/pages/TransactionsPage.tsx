@@ -7,25 +7,25 @@ import { ExportButtons } from '../components/transactions/ExportButtons'
 import { TransactionFilters } from '../components/transactions/TransactionFilters'
 import { TransactionForm } from '../components/transactions/TransactionForm'
 import { TransactionTable } from '../components/transactions/TransactionTable'
-import { useFinance } from '../context/FinanceContext'
+import { Button } from '../components/ui/Button'
+import { Card } from '../components/ui/Card'
+import { useFinance } from '../context/useFinance'
 import { can } from '../lib/permissions'
 import type { Transaction, TransactionType } from '../types/finance'
 import { exportTransactionsCSV, exportTransactionsJSON } from '../utils/export'
 
 export function TransactionsPage() {
-  const {
-    loading,
-    role,
-    filteredTransactions,
-    groupedTransactions,
-    categories,
-    filters,
-    setFilters,
-    sort,
-    setSort,
-    addTransaction,
-    updateTransaction,
-  } = useFinance()
+  const loading = useFinance((state) => state.loading)
+  const role = useFinance((state) => state.role)
+  const filteredTransactions = useFinance((state) => state.filteredTransactions)
+  const groupedTransactions = useFinance((state) => state.groupedTransactions)
+  const categories = useFinance((state) => state.categories)
+  const filters = useFinance((state) => state.filters)
+  const setFilters = useFinance((state) => state.setFilters)
+  const sort = useFinance((state) => state.sort)
+  const setSort = useFinance((state) => state.setSort)
+  const addTransaction = useFinance((state) => state.addTransaction)
+  const updateTransaction = useFinance((state) => state.updateTransaction)
 
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
@@ -74,52 +74,47 @@ export function TransactionsPage() {
         </motion.div>
       )}
 
-      <motion.article
-        className="rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
       >
-        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h2 className="text-base font-bold text-[var(--text-main)]">All Transactions</h2>
-            <p className="text-xs text-[var(--text-dim)]">Filter, search and manage your financial records</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {canExport && (
-              <ExportButtons
-                onCSV={() => exportTransactionsCSV(filteredTransactions)}
-                onJSON={() => exportTransactionsJSON(filteredTransactions)}
-              />
-            )}
+        <Card>
+          <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-base font-bold text-[var(--text-main)]">All Transactions</h2>
+              <p className="text-xs text-[var(--text-dim)]">Filter, search and manage your financial records</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {canExport && (
+                <ExportButtons
+                  onCSV={() => exportTransactionsCSV(filteredTransactions)}
+                  onJSON={() => exportTransactionsJSON(filteredTransactions)}
+                />
+              )}
 
-            {canCreate && (
-              <>
-                <button
-                  onClick={() => openCreate('income')}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-50 px-3.5 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
-                >
-                  <Plus size={14} /> Add Income
-                </button>
-                <button
-                  onClick={() => openCreate('expense')}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-linear-to-r from-violet-600 to-purple-700 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
-                >
-                  <Plus size={14} /> Add Expense
-                </button>
-              </>
-            )}
+              {canCreate && (
+                <>
+                  <Button onClick={() => openCreate('income')} variant="success" leftIcon={<Plus size={14} />}>
+                    Add Income
+                  </Button>
+                  <Button onClick={() => openCreate('expense')} variant="primary" leftIcon={<Plus size={14} />}>
+                    Add Expense
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
 
-        <TransactionFilters
-          filters={filters}
-          categories={categories}
-          sort={sort}
-          onFiltersChange={setFilters}
-          onSortChange={setSort}
-        />
-      </motion.article>
+          <TransactionFilters
+            filters={filters}
+            categories={categories}
+            sort={sort}
+            onFiltersChange={setFilters}
+            onSortChange={setSort}
+          />
+        </Card>
+      </motion.div>
 
       {typeof document !== 'undefined' &&
         createPortal(
@@ -160,14 +155,15 @@ export function TransactionsPage() {
           document.body,
         )}
 
-      <motion.article
-        className="rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+      <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: 'easeOut', delay: 0.05 }}
       >
-        <TransactionTable groups={groupedTransactions} canEdit={canEdit} onEdit={openEdit} />
-      </motion.article>
+        <Card>
+          <TransactionTable groups={groupedTransactions} canEdit={canEdit} onEdit={openEdit} />
+        </Card>
+      </motion.div>
     </motion.div>
   )
 }

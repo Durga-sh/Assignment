@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { formatCurrency } from '../../utils/format'
+import { Card } from '../ui/Card'
 
 type SummaryCardsProps = {
   totalBalance: number
@@ -47,25 +48,26 @@ export function SummaryCards({ totalBalance, totalIncome, totalExpenses }: Summa
       variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
     >
       {cards.map((card, index) => (
-        <motion.article
+        <motion.div
           key={card.title}
-          className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-sm"
           variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
           transition={{ type: 'spring', stiffness: 120, damping: 16, delay: index * 0.04 }}
           whileHover={{ y: -3, boxShadow: '0 8px 30px color-mix(in srgb, var(--accent) 12%, transparent)' }}
         >
-          <div className="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-[color-mix(in_srgb,var(--accent)_6%,transparent)] blur-2xl" />
+          <Card elevated={false} className="group relative overflow-hidden shadow-sm">
+            <div className="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full bg-[color-mix(in_srgb,var(--accent)_6%,transparent)] blur-2xl" />
 
-          <div className="flex items-start justify-between">
-            <p className="text-sm font-medium text-[var(--text-dim)]">{card.title}</p>
-            <span className={`flex h-8 w-8 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
-              {card.icon}
-            </span>
-          </div>
-          <p className={`mt-3 text-2xl font-extrabold tracking-tight ${card.valueColor}`}>
-            {card.trend === '-' ? '– ' : ''}{formatCurrency(card.value)}
-          </p>
-        </motion.article>
+            <div className="flex items-start justify-between">
+              <p className="text-sm font-medium text-[var(--text-dim)]">{card.title}</p>
+              <span className={`flex h-8 w-8 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
+                {card.icon}
+              </span>
+            </div>
+            <p className={`mt-3 text-2xl font-extrabold tracking-tight ${card.valueColor}`}>
+              {card.trend === '-' ? '– ' : ''}{formatCurrency(card.value)}
+            </p>
+          </Card>
+        </motion.div>
       ))}
     </motion.section>
   )

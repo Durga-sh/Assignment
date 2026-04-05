@@ -1,11 +1,16 @@
+import { useEffect } from 'react'
 import { AppLayout } from './components/layout/AppLayout'
-import { FinanceProvider } from './context/FinanceContext'
+import { useFinance } from './context/useFinance'
 
 function App() {
+  const bootstrap = useFinance((state) => state.bootstrap)
+
+  useEffect(() => {
+    void bootstrap()
+  }, [bootstrap])
+
   return (
-    <FinanceProvider>
-      <AppLayout />
-    </FinanceProvider>
+    <AppLayout />
   )
 }
 

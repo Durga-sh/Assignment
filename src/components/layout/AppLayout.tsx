@@ -6,15 +6,16 @@
   IconSun,
 } from '@tabler/icons-react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Bell, Check, ChevronDown, Eye, Plus, ShieldCheck } from 'lucide-react'
+import { Check, ChevronDown, Eye, Plus, ShieldCheck } from 'lucide-react'
 import viteLogo from '../../assets/vite.svg'
 import { useEffect, useRef, useState } from 'react'
-import { useFinance } from '../../context/FinanceContext'
+import { useFinance } from '../../context/useFinance'
 import { can, ROLE_META } from '../../lib/permissions'
 import { InsightsPage } from '../../pages/InsightsPage'
 import { OverviewPage } from '../../pages/OverviewPage'
 import { TransactionsPage } from '../../pages/TransactionsPage'
 import type { Role } from '../../types/finance'
+import { Badge } from '../ui/Badge'
 
 type Page = 'overview' | 'transactions' | 'insights'
 
@@ -94,9 +95,9 @@ function RoleSwitcher({ role, onSelect }: { role: Role; onSelect: (r: Role) => v
                         </span>
                         <div>
                           <span className="text-sm font-bold text-[var(--text-main)]">{m.label}</span>
-                          <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-bold ${m.badgeBg} ${m.badgeText}`}>
+                          <Badge className={`ml-2 ${m.badgeBg} ${m.badgeText}`}>
                             {r === 'admin' ? 'Full Access' : 'Read Only'}
-                          </span>
+                          </Badge>
                         </div>
                       </div>
                       {active && <Check size={14} className="text-[var(--accent)]" />}
@@ -106,12 +107,13 @@ function RoleSwitcher({ role, onSelect }: { role: Role; onSelect: (r: Role) => v
 
                     <div className="flex flex-wrap gap-1.5">
                       {m.permissions.map((perm) => (
-                        <span
+                        <Badge
                           key={perm}
-                          className="rounded-full border border-[var(--line)] bg-[var(--bg-main)] px-2 py-0.5 text-[10px] font-medium text-[var(--text-dim)]"
+                          variant="muted"
+                          className="font-medium"
                         >
                           {perm}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   </button>
@@ -133,21 +135,38 @@ function RoleSwitcher({ role, onSelect }: { role: Role; onSelect: (r: Role) => v
 
 // App Layout
 export function AppLayout() {
-  const { role, setRole, theme, setTheme } = useFinance()
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const role = useFinance((state) => state.role)
+  const setRole = useFinance((state) => state.setRole)
+  const theme = useFinance((state) => state.theme)
+  const setTheme = useFinance((state) => state.setTheme)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : true,
+  )
   const [activePage, setActivePage] = useState<Page>('overview')
   const canAdd = can(role, 'create:transaction')
   const meta = ROLE_META[role]
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)')
+    const onChange = (event: MediaQueryListEvent) => {
+      setIsDesktop(event.matches)
+      setSidebarOpen(false)
+    }
+
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--bg-main)]">
       {/* Sidebar */}
       <motion.aside
         className="relative z-20 flex h-full shrink-0 flex-col border-r border-[var(--line)] bg-[var(--bg-surface)] overflow-hidden"
-        animate={{ width: sidebarOpen ? 220 : 64 }}
+        animate={{ width: isDesktop && sidebarOpen ? 220 : 64 }}
         transition={{ type: 'spring', stiffness: 280, damping: 30 }}
-        onMouseEnter={() => setSidebarOpen(true)}
-        onMouseLeave={() => setSidebarOpen(false)}
+        onMouseEnter={() => isDesktop && setSidebarOpen(true)}
+        onMouseLeave={() => isDesktop && setSidebarOpen(false)}
       >
         {/* Logo */}
         <div className="flex items-center gap-3 border-b border-[var(--line)] px-4 py-5">
@@ -155,7 +174,7 @@ export function AppLayout() {
             <img src={viteLogo} alt="Logo" className="h-5 w-5 object-contain" />
           </div>
           <motion.span
-            animate={{ opacity: sidebarOpen ? 1 : 0, x: sidebarOpen ? 0 : -6 }}
+            animate={{ opacity: isDesktop && sidebarOpen ? 1 : 0, x: isDesktop && sidebarOpen ? 0 : -6 }}
             transition={{ duration: 0.15 }}
             className="whitespace-nowrap text-sm font-extrabold tracking-tight text-[var(--text-main)]"
           >
@@ -173,7 +192,7 @@ export function AppLayout() {
             >
               <Plus size={16} className="shrink-0" />
               <motion.span
-                animate={{ opacity: sidebarOpen ? 1 : 0 }}
+                animate={{ opacity: isDesktop && sidebarOpen ? 1 : 0 }}
                 className="overflow-hidden whitespace-nowrap text-sm font-semibold"
               >
                 Add Transaction
@@ -204,7 +223,7 @@ export function AppLayout() {
                   {link.icon}
                 </span>
                 <motion.span
-                  animate={{ opacity: sidebarOpen ? 1 : 0 }}
+                  animate={{ opacity: isDesktop && sidebarOpen ? 1 : 0 }}
                   className="whitespace-nowrap text-sm font-semibold"
                 >
                   {link.label}
@@ -221,7 +240,7 @@ export function AppLayout() {
               {role === 'admin' ? <ShieldCheck size={15} /> : <Eye size={15} />}
             </span>
             <motion.div
-              animate={{ opacity: sidebarOpen ? 1 : 0 }}
+              animate={{ opacity: isDesktop && sidebarOpen ? 1 : 0 }}
               className="flex min-w-0 flex-col"
             >
               <span className={`text-xs font-bold ${meta.color}`}>{meta.label}</span>
@@ -239,7 +258,7 @@ export function AppLayout() {
               {theme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
             </span>
             <motion.span
-              animate={{ opacity: sidebarOpen ? 1 : 0 }}
+              animate={{ opacity: isDesktop && sidebarOpen ? 1 : 0 }}
               className="whitespace-nowrap text-sm font-semibold"
             >
               {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
@@ -251,7 +270,7 @@ export function AppLayout() {
       {/* Right column */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-[var(--line)] bg-[var(--bg-surface)] px-6">
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-[var(--line)] bg-[var(--bg-surface)] px-3 sm:px-4 md:px-6">
           <div>
             <p className="text-sm font-bold text-[var(--text-main)] capitalize">{activePage}</p>
             <p className="text-xs text-[var(--text-dim)]">
@@ -262,24 +281,17 @@ export function AppLayout() {
           </div>
 
           <div className="flex items-center gap-3">
-            <span
-              className={`hidden md:inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${meta.badgeBg} ${meta.badgeText}`}
-            >
+            <Badge className={`hidden md:inline-flex gap-1.5 px-3 py-1 text-xs font-semibold ${meta.badgeBg} ${meta.badgeText}`}>
               {role === 'admin' ? <ShieldCheck size={12} /> : <Eye size={12} />}
               {meta.label}
-            </span>
-
-            <button className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--bg-main)] text-[var(--text-dim)] transition-colors hover:bg-[var(--bg-soft)]">
-              <Bell size={18} />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[var(--accent)]" />
-            </button>
+            </Badge>
 
             <RoleSwitcher role={role} onSelect={setRole} />
           </div>
         </header>
 
         {/* Page content */}
-        <main className="flex flex-1 flex-col overflow-hidden bg-[var(--bg-main)] p-5">
+        <main className="flex flex-1 flex-col overflow-hidden bg-[var(--bg-main)] p-3 sm:p-4 md:p-5">
           <AnimatePresence mode="wait">
             <motion.div
               key={activePage}

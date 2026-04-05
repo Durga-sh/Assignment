@@ -1,5 +1,5 @@
 ﻿import { motion } from 'framer-motion'
-import { ArrowDownRight, ArrowUpRight, Banknote, MoreHorizontal, PiggyBank, TrendingUp } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, Banknote, PiggyBank, TrendingUp } from 'lucide-react'
 import {
   Area,
   AreaChart,
@@ -15,13 +15,17 @@ import {
   YAxis,
 } from 'recharts'
 import { LoadingPanel } from '../components/common/LoadingPanel'
-import { useFinance } from '../context/FinanceContext'
+import { useFinance } from '../context/useFinance'
 import { formatCurrency } from '../utils/format'
 
 const PIE_COLORS = ['#7c3aed', '#a855f7', '#06b6d4', '#10b981', '#f59e0b', '#f43f5e', '#6366f1']
 
 export function OverviewPage() {
-  const { loading, summary, trendData, spendingBreakdown, transactions } = useFinance()
+  const loading = useFinance((state) => state.loading)
+  const summary = useFinance((state) => state.summary)
+  const trendData = useFinance((state) => state.trendData)
+  const spendingBreakdown = useFinance((state) => state.spendingBreakdown)
+  const transactions = useFinance((state) => state.transactions)
 
   if (loading) return <LoadingPanel />
 
@@ -92,7 +96,7 @@ export function OverviewPage() {
     <div className="flex h-full flex-col gap-4 overflow-y-auto">
 
       {/* ── Row 1: KPI Cards ───────────────────────────────────── */}
-      <div className="grid shrink-0 grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid shrink-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpi.map((card, i) => (
           <motion.article
             key={card.label}
@@ -118,21 +122,21 @@ export function OverviewPage() {
       </div>
 
       {/* ── Row 2: Income vs Expenses Bar + Spending Donut ────── */}
-      <div className="grid shrink-0 gap-4 lg:grid-cols-5">
+      <div className="grid shrink-0 grid-cols-1 gap-4 lg:grid-cols-5">
 
         {/* Income vs Expenses grouped bar (3/5) */}
         <motion.article
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.1 }}
-          className="col-span-3 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+          className="col-span-1 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-4 sm:p-5 shadow-[var(--card-shadow)] lg:col-span-3"
         >
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div>
               <h2 className="text-sm font-bold text-[var(--text-main)]">Income vs Expenses</h2>
               <p className="text-xs text-[var(--text-dim)]">Monthly comparison</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <span className="flex items-center gap-1.5 text-xs text-[var(--text-dim)]">
                 <span className="h-2.5 w-2.5 rounded-sm bg-violet-500" />
                 Income
@@ -141,9 +145,6 @@ export function OverviewPage() {
                 <span className="h-2.5 w-2.5 rounded-sm bg-cyan-400" />
                 Expenses
               </span>
-              <button className="text-[var(--text-dim)] hover:text-[var(--text-main)]">
-                <MoreHorizontal size={16} />
-              </button>
             </div>
           </div>
           <div className="h-48">
@@ -184,21 +185,18 @@ export function OverviewPage() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.15 }}
-          className="col-span-2 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+          className="col-span-1 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-4 sm:p-5 shadow-[var(--card-shadow)] lg:col-span-2"
         >
           <div className="mb-3 flex items-center justify-between">
             <div>
               <h2 className="text-sm font-bold text-[var(--text-main)]">Spending by Category</h2>
               <p className="text-xs text-[var(--text-dim)]">Expense breakdown</p>
             </div>
-            <button className="text-[var(--text-dim)] hover:text-[var(--text-main)]">
-              <MoreHorizontal size={16} />
-            </button>
           </div>
           {spendingBreakdown.length === 0 ? (
             <div className="grid h-40 place-items-center text-sm text-[var(--text-dim)]">No expense data</div>
           ) : (
-            <div className="grid grid-cols-2 items-center gap-2">
+            <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-2 sm:gap-2">
               <div className="h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -242,23 +240,20 @@ export function OverviewPage() {
       </div>
 
       {/* ── Row 3: Balance Trend + Category Table + Violet Card ─ */}
-      <div className="grid gap-4 pb-1 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 pb-1 lg:grid-cols-5">
 
         {/* Balance Trend area chart (2/5) */}
         <motion.article
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.2 }}
-          className="col-span-2 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+          className="col-span-1 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-4 sm:p-5 shadow-[var(--card-shadow)] lg:col-span-2"
         >
           <div className="mb-3 flex items-center justify-between">
             <div>
               <h2 className="text-sm font-bold text-[var(--text-main)]">Balance Trend</h2>
               <p className="text-xs text-[var(--text-dim)]">Running monthly balance</p>
             </div>
-            <button className="text-[var(--text-dim)] hover:text-[var(--text-main)]">
-              <MoreHorizontal size={16} />
-            </button>
           </div>
           <div className="h-40">
             {chartTrend.length === 0 ? (
@@ -306,13 +301,10 @@ export function OverviewPage() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.25 }}
-          className="col-span-2 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-5 shadow-[var(--card-shadow)]"
+          className="col-span-1 rounded-2xl border border-[var(--line)] bg-[var(--bg-surface)] p-4 sm:p-5 shadow-[var(--card-shadow)] lg:col-span-2"
         >
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-bold text-[var(--text-main)]">Spending by Division</h2>
-            <button className="text-[var(--text-dim)] hover:text-[var(--text-main)]">
-              <MoreHorizontal size={16} />
-            </button>
           </div>
           <div className="flex justify-between border-b border-[var(--line)] pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-dim)]">
             <span>Category</span>
@@ -348,7 +340,7 @@ export function OverviewPage() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.3 }}
-          className="relative col-span-1 overflow-hidden rounded-2xl bg-linear-to-br from-violet-600 to-purple-700 p-5 shadow-[var(--card-shadow)]"
+          className="relative col-span-1 overflow-hidden rounded-2xl bg-linear-to-br from-violet-600 to-purple-700 p-4 sm:p-5 shadow-[var(--card-shadow)]"
         >
           <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
           <div className="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-purple-400/20 blur-xl" />
