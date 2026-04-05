@@ -2,9 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link id="favicon" rel="icon" type="image/png" href="/favicon-light.png?v=2" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>zorvyn</title>
+    <script>
+      (function () {
+        var link = document.getElementById('favicon')
+        if (!link) return
+
+        function useDarkTheme() {
+          var attr = document.documentElement.getAttribute('data-theme')
+          if (attr === 'dark') return true
+          if (attr === 'light') return false
+          return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        }
+
+        function applyFavicon() {
+          var next = useDarkTheme() ? '/favicon-light.png?v=2' : '/favicon-dark.png?v=2'
+          if (link.getAttribute('href') !== next) {
+            link.setAttribute('href', next)
+          }
+        }
+
+        applyFavicon()
+
+        if (window.matchMedia) {
+          var media = window.matchMedia('(prefers-color-scheme: dark)')
+          if (media.addEventListener) media.addEventListener('change', applyFavicon)
+        }
+
+        if (window.MutationObserver) {
+          var observer = new MutationObserver(applyFavicon)
+          observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

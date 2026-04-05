@@ -9,6 +9,7 @@ export function InsightsPage() {
   const loading = useFinance((state) => state.loading)
   const summary = useFinance((state) => state.summary)
   const trendData = useFinance((state) => state.trendData)
+  const spendingBreakdown = useFinance((state) => state.spendingBreakdown)
   const transactions = useFinance((state) => state.transactions)
 
   if (loading) return <LoadingPanel />
@@ -23,6 +24,8 @@ export function InsightsPage() {
 
   const balanceDelta =
     trendData.length > 1 ? trendData[trendData.length - 1].balance - trendData[0].balance : 0
+
+  const highestSpending = spendingBreakdown[0]
 
   const monthlyData = Array.from(
     transactions
@@ -66,6 +69,15 @@ export function InsightsPage() {
       dot: 'bg-cyan-500',
     },
     {
+      label: 'Highest Spending Category',
+      value: highestSpending?.category ?? 'No expense data',
+      hint: highestSpending ? `Spent ${formatCurrency(highestSpending.amount)}` : 'Add expense records',
+      icon: <ArrowDownRight size={18} />,
+      iconBg: 'bg-rose-100',
+      iconColor: 'text-rose-500',
+      dot: 'bg-rose-500',
+    },
+    {
       label: 'Balance Growth',
       value: formatCurrency(Math.abs(balanceDelta)),
       hint: balanceDelta >= 0 ? 'Positive trajectory' : 'Negative trajectory',
@@ -80,7 +92,7 @@ export function InsightsPage() {
     <div className="flex h-full flex-col gap-4 overflow-y-auto">
 
       {/* -- Row 1: KPI Cards ----------------------------------- */}
-      <div className="grid shrink-0 grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid shrink-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpi.map((card, i) => (
           <motion.article
             key={card.label}

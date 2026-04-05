@@ -7,8 +7,9 @@
 } from '@tabler/icons-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, ChevronDown, Eye, Plus, ShieldCheck } from 'lucide-react'
-import viteLogo from '../../assets/vite.svg'
 import { useEffect, useRef, useState } from 'react'
+import zorvynLogoDark from '../../assets/zorvyn-logo-dark.png'
+import zorvynLogoLight from '../../assets/zorvyn-logo-light.png'
 import { useFinance } from '../../context/useFinance'
 import { can, ROLE_META } from '../../lib/permissions'
 import { InsightsPage } from '../../pages/InsightsPage'
@@ -24,6 +25,11 @@ const NAV = [
   { label: 'Transactions', icon: <IconCreditCard size={18} />, page: 'transactions' as Page },
   { label: 'Insights', icon: <IconChartBar size={18} />, page: 'insights' as Page },
 ]
+
+const ZORVYN_LOGO = {
+  light: zorvynLogoDark,
+  dark: zorvynLogoLight,
+}
 
 // Role Switcher Dropdown
 function RoleSwitcher({ role, onSelect }: { role: Role; onSelect: (r: Role) => void }) {
@@ -146,6 +152,7 @@ export function AppLayout() {
   const [activePage, setActivePage] = useState<Page>('overview')
   const canAdd = can(role, 'create:transaction')
   const meta = ROLE_META[role]
+  const sidebarLogo = theme === 'dark' ? ZORVYN_LOGO.dark : ZORVYN_LOGO.light
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)')
@@ -159,10 +166,10 @@ export function AppLayout() {
   }, [])
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--bg-main)]">
+    <div className="flex h-dvh min-h-0 overflow-hidden bg-[var(--bg-main)]">
       {/* Sidebar */}
       <motion.aside
-        className="relative z-20 flex h-full shrink-0 flex-col border-r border-[var(--line)] bg-[var(--bg-surface)] overflow-hidden"
+        className="relative z-20 flex h-full min-h-0 shrink-0 flex-col overflow-hidden border-r border-[var(--line)] bg-[var(--bg-surface)]"
         animate={{ width: isDesktop && sidebarOpen ? 220 : 64 }}
         transition={{ type: 'spring', stiffness: 280, damping: 30 }}
         onMouseEnter={() => isDesktop && setSidebarOpen(true)}
@@ -171,7 +178,7 @@ export function AppLayout() {
         {/* Logo */}
         <div className="flex items-center gap-3 border-b border-[var(--line)] px-4 py-5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-main)] border border-[var(--line)] shadow-sm">
-            <img src={viteLogo} alt="Logo" className="h-5 w-5 object-contain" />
+            <img src={sidebarLogo} alt="Zorvyn logo" className="h-5 w-5 object-contain" />
           </div>
           <motion.span
             animate={{ opacity: isDesktop && sidebarOpen ? 1 : 0, x: isDesktop && sidebarOpen ? 0 : -6 }}
@@ -202,7 +209,7 @@ export function AppLayout() {
         )}
 
         {/* Nav links */}
-        <nav className={`flex flex-1 flex-col gap-0.5 overflow-x-hidden overflow-y-auto px-2 ${canAdd ? '' : 'pt-4'}`}>
+        <nav className={`flex min-h-0 flex-1 flex-col gap-0.5 overflow-x-hidden overflow-y-auto px-2 ${canAdd ? '' : 'pt-4'}`}>
           {NAV.map((link) => {
             const active = activePage === link.page
             return (
@@ -268,7 +275,7 @@ export function AppLayout() {
       </motion.aside>
 
       {/* Right column */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {/* Header */}
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-[var(--line)] bg-[var(--bg-surface)] px-3 sm:px-4 md:px-6">
           <div>
@@ -291,7 +298,7 @@ export function AppLayout() {
         </header>
 
         {/* Page content */}
-        <main className="flex flex-1 flex-col overflow-hidden bg-[var(--bg-main)] p-3 sm:p-4 md:p-5">
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[var(--bg-main)] p-3 sm:p-4 md:p-5">
           <AnimatePresence mode="wait">
             <motion.div
               key={activePage}

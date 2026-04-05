@@ -73,8 +73,9 @@ npm run preview
 ### 3. Insights
 
 - User-friendly KPI cards:
-  - Income coverage ratio
+  - Income vs Expenses (shown as simple `x` ratio)
   - Average transaction value
+  - Highest spending category
   - Balance growth
 - Monthly income vs expenses chart.
 - Monthly breakdown table (income, expenses, net).
@@ -97,7 +98,7 @@ npm run preview
 - Animated page and card transitions.
 - Responsive layout across desktop and mobile widths.
 - Reusable UI primitives (Button, Badge, Card).
-- Removed non-functional card menu actions for cleaner UI.
+- Cleaned UI controls by removing non-functional card menu actions and unused header notification action.
 
 ## State Management (Zustand)
 
@@ -138,6 +139,7 @@ Important:
 
 - Seed data is written only on first load (or when storage is missing/corrupt).
 - If you change mock data and want to reseed, clear local storage for `zorvyn_transactions_v3` and reload.
+- Mock seed dates are normalized to avoid future-date entries so latest-first sorting behaves predictably.
 
 ## Sorting and Latest Transaction Behavior
 
